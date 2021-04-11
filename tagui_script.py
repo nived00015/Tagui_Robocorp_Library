@@ -32,7 +32,7 @@ def setup():
 
                     os.system('/Applications/Python\ 3.6/Install\ Certificates.command > /dev/null 2>&1')
 
-    # set tagui zip filename for respective operating systems
+    # set tagui zip filename for respective operating system
     if platform.system() == 'Linux': tagui_zip_file = 'TagUI_Linux.zip'
     elif platform.system() == 'Darwin': tagui_zip_file = 'TagUI_macOS.zip'
     elif platform.system() == 'Windows': tagui_zip_file = 'TagUI_Windows.zip'
