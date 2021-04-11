@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 # +
+## Details : Tagui_Robocorp Library
+
+#author : Nived N
+#email : nived00015@gmail.com
+
 #import rpa as r
+
 import re
 import os
 import platform
