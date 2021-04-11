@@ -1,17 +1,85 @@
 # -*- coding: utf-8 -*-
-# +
-#import rpa as r
-
-#AUTHOR :  NIVED N & Ken Soh
+#AUTHOR :  NIVED N
 
 import re
 import os
 import platform
-import time
 import subprocess
 import sys
 from RPA.core.notebook import notebook_print as np
 
+def _patch_macos_pjs():
+    """patch PhantomJS to latest v2.1.1 that plays well with new macOS versions"""
+    if platform.system() == 'Darwin' and not os.path.isdir(os.path.expanduser('~') + '/.tagui/src/phantomjs_old'):
+        original_directory = os.getcwd(); os.chdir(os.path.expanduser('~') + '/.tagui/src')
+        print('[RPA][INFO] - downloading latest PhantomJS to fix OpenSSL issue')
+        download('https://github.com/tebelorg/Tump/releases/download/v1.0.0/phantomjs-2.1.1-macosx.zip', 'phantomjs.zip')
+        if not os.path.isfile('phantomjs.zip'):
+            print('[RPA][ERROR] - unable to download latest PhantomJS v2.1.1')
+            os.chdir(original_directory); return False
+        unzip('phantomjs.zip'); os.rename('phantomjs', 'phantomjs_old'); os.rename('phantomjs-2.1.1-macosx', 'phantomjs')
+        if os.path.isfile('phantomjs.zip'): os.remove('phantomjs.zip')
+        os.system('chmod -R 755 phantomjs > /dev/null 2>&1')
+        os.chdir(original_directory); return True
+    else:
+        return True
+
+def download(download_url = None, filename_to_save = None):
+    """function for python 2/3 compatible file download from url"""
+
+    if download_url is None or download_url == '':
+        print('[RPA][ERROR] - download URL missing for download()')
+        return False
+
+    # if not given, use last part of url as filename to save
+    if filename_to_save is None or filename_to_save == '':
+        download_url_tokens = download_url.split('/')
+        filename_to_save = download_url_tokens[-1]
+
+    # delete existing file if exist to ensure freshness
+    if os.path.isfile(filename_to_save):
+        os.remove(filename_to_save)
+
+    # handle case where url is invalid or has no content
+    try:
+        if _python2_env():
+            import urllib; urllib.urlretrieve(download_url, filename_to_save)
+        else:
+            import urllib.request; urllib.request.urlretrieve(download_url, filename_to_save)
+
+    except Exception as e:
+        print('[RPA][ERROR] - failed downloading from ' + download_url + '...')
+        print(str(e))
+        return False
+
+    # take the existence of downloaded file as success
+    if os.path.isfile(filename_to_save):
+        return True
+
+    else:
+        print('[RPA][ERROR] - failed downloading to ' + filename_to_save)
+        return False
+
+def unzip(file_to_unzip = None, unzip_location = None):
+    """function to unzip zip file to specified location"""
+    import zipfile
+
+    if file_to_unzip is None or file_to_unzip == '':
+        print('[RPA][ERROR] - filename missing for unzip()')
+        return False
+    elif not os.path.isfile(file_to_unzip):
+        print('[RPA][ERROR] - file specified missing for unzip()')
+        return False
+
+    zip_file = zipfile.ZipFile(file_to_unzip, 'r')
+
+    if unzip_location is None or unzip_location == '':
+        zip_file.extractall()
+    else:
+        zip_file.extractall(unzip_location)
+
+    zip_file.close()
+    return True
 
 def setup():
     
@@ -30,7 +98,6 @@ def setup():
         if os.system('/Applications/Python\ 3.9/Install\ Certificates.command > /dev/null 2>&1') != 0:
             if os.system('/Applications/Python\ 3.8/Install\ Certificates.command > /dev/null 2>&1') != 0:
                 if os.system('/Applications/Python\ 3.7/Install\ Certificates.command > /dev/null 2>&1') != 0:
-
                     os.system('/Applications/Python\ 3.6/Install\ Certificates.command > /dev/null 2>&1')
 
     # set tagui zip filename for respective operating systems
@@ -174,28 +241,38 @@ def setup():
 
 def Run_Script(language, *kwargs):
     ### Here we are doing the intialisation [installation and variable intialize]
-    
+
+    # get user home folder location to locate tagui executable
     if platform.system()=='Windows':
-        home_directory = os.environ['APPDATA']
-        tagui_directory = home_directory + '/' + 'tagui'
+        tagui_directory = os.environ['APPDATA'] + '/' + 'tagui'
     else:
-        home_directory = os.path.expanduser('~')
-        tagui_directory = home_directory + '/' + '.tagui'
+        tagui_directory = os.path.expanduser('~') + '/' + '.tagui'
 
-    if os.path.isdir(tagui_directory)== False:
-        setup()
+    tagui_executable = tagui_directory + '/' + 'src' + '/' + 'tagui'
+    end_processes_executable = tagui_directory + '/' + 'src' + '/' + 'end_processes'
 
-    else:
-        pass
+    # if tagui executable is not found, initiate setup() to install tagui
+    if not os.path.isfile(tagui_executable):
+        if not setup():
+            # error message is shown by setup(), no need for message here
+            return False
 
-                
-    ##remove workflow.tag if it is available
+    # sync tagui delta files for current release if needed
+    #if not _tagui_delta(tagui_directory): return False
+
+    # on macOS, patch PhantomJS to latest v2.1.1 to solve OpenSSL issue
+    if platform.system() == 'Darwin' and not _patch_macos_pjs(): return False
+
+    # on Windows, check if there is space in folder path name
+    if platform.system() == 'Windows' and ' ' in os.getcwd():
+        print('[RPA][INFO] - to use TagUI on Windows, avoid space in folder path name')
+        return False
+
+    ## remove workflow.tag if it is available
     if os.path.isfile('workflow.tag')==True:
         os.remove('workflow.tag')
 
-
-    ## Changing the language settings
-
+    ## changing the language settings
     tagui_config_file= tagui_directory+'/'+'src'+'/'+'tagui_config.txt'
     f3 = open(tagui_config_file,'r')
     data = f3.read()
@@ -210,8 +287,13 @@ def Run_Script(language, *kwargs):
     f1 = open('workflow.tag','w')
     f1.write("\n".join(kwargs))
     f1.close()
-    tagui_exec = tagui_directory+'/'+'src'+'/'+'tagui'
-    tagui_cmd= tagui_exec+' workflow.tag -q'
+    tagui_executable = tagui_directory+'/'+'src'+'/'+'tagui'
+    tagui_cmd = tagui_executable+' workflow.tag -q'
+    
+    # run tagui end processes script to flush dead processes
+    # for eg execution ended with ctrl+c or forget to close()
+    os.system(end_processes_executable)
+
     l=[]
     try:
         # launch tagui using subprocess
@@ -222,8 +304,7 @@ def Run_Script(language, *kwargs):
             stderr=subprocess.PIPE
         )
         
-
-        # loop until tagui process is running
+        # loop until tagui process has ended
         while tagui_process.poll() is None:
 
             # read next line of output from tagui process
@@ -235,21 +316,17 @@ def Run_Script(language, *kwargs):
 
             # do what you want here with the live output
             if tagui_output.strip() != '':
-                
+
                 #rstrip() to remove \n char at the end
                 if tagui_output.startswith('ERROR'):
                     raise Exception(tagui_output)
-                
+
                 else:
                     np(tagui_output.rstrip())
                     l.append(tagui_output.rstrip())
 
-
     except Exception as e:
         #np('[RPA][ERROR] - ' + str(e))
         raise Exception('[RPA][ERROR] - ' + str(e))
+
     return l
-
-
-
-
