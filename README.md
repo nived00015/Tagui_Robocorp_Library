@@ -1,25 +1,25 @@
 <h1 align="center"><b> TagUI Robocorp Library</b></h1>
 <br><br>
 <p>Hi all,
-This is the library for TagUI Robocorp Integration. TagUI is an open source RPA tool by AI Singapore, a government funded program to accelerate AI. Robocorp is open source RPA tool build on RobotFramework.Using this library, it is possible to write TagUI scripts in Robocorp in different languages.</p>
+This is the library for TagUI Robocorp Integration. TagUI is an open source RPA tool by AI Singapore, a government funded program to accelerate AI. Robocorp is open source RPA tool build on RobotFramework. Using this library, it is possible to write TagUI scripts in Robocorp in different languages.</p>
 
 <h3>To use the library in Robocorp Lab, follow the steps as below: </h3>
 
-Step 1 :  Download the [file](https://github.com/nived00015/Tagui_Robocorp_Library.git)
+Step 1 :  Download the file [<b>Tagui_Robocorp.zip</b>](https://github.com/nived00015/Tagui_Robocorp_Library.git) for understanding the library usage
 
 Step 2 :  From the downloaded zip file, extract the folder [<b>Tagui_Robocorp_Library-main</b>]
 
-Step 3 :  The folder contains <b>tagui_script.py</b>, which is python file and sample robocorp workflow <b>Tagui_Robocorp.zip</b> for understanding the library usage.
+Step 3 :  The folder contains <b>tagui_script.py</b>, which is python file and sample robocorp workflow
 
 ![image](https://user-images.githubusercontent.com/64367090/114753898-9a46d580-9d75-11eb-95a9-2ca7fa93d83a.png)
 
-Step 4 :  Create a robocorp workflow using Robocorp Lab IDE.
+Step 4 :  Create a robocorp workflow using Robocorp Lab IDE
 
 Step 5 : After creating the workflow, move/copy the tagui_script.py to the workflow folder with same name [<b>tagui_script.py</b>] as shown below
 
 ![image](https://user-images.githubusercontent.com/64367090/114754483-4092db00-9d76-11eb-8adf-f32176c55b59.png)
 
-Step 6 : To use the library features in Robocorp Lab, first import the library in task.robot under Settings cell as <b>tagui_script</b> as below.
+Step 6 : To use the library features in Robocorp Lab, first import the library in task.robot under Settings cell as <b>tagui_script</b> as below
 ```
 ***Settings***
 Documentation   Template robot main suite.
@@ -88,11 +88,11 @@ As you see in the code, The output of keyword <b>Run Script</b> should be stored
 <b>Output of above code</b><br><br>
 ![image](https://user-images.githubusercontent.com/64367090/115036688-5c6bbd80-9eeb-11eb-9c11-08886585bec1.png)
 
-So you can see that , the first line output is coming defaulty when Run Script keyword runs, while the second line output <b>output via Robocorp is ['ONE AUD is equal to 89.22766 INR']</b> is done by Notebook Print, and we can see that <b>${output}</b> variable is a list here [<b>['ONE AUD is equal to 89.22766 INR']</b>]. Now we can even loop through this and do the required logic for the process.<br><br>
+So you can see that , the first line output is coming defaulty when Run Script keyword runs, while the second line output <b>output via Robocorp is ['ONE AUD is equal to 89.22766 INR']</b> is done by Notebook Print, and we can see that <b>${output}</b> variable is a list here <b>['ONE AUD is equal to 89.22766 INR']</b>. Now we can even loop through this and do the required logic for the process.<br><br>
 
 
 
-<b>2. Writing TagUI Script in Robocorp in different languages</b><br><br>
+<b>2. Writing TagUI Script in Robocorp in different languages</b><br>
 
 So far, we had seen writing TagUI script written in English language in Robocorp, it is possible to write in other languages too. Refer the below code examples for writing TagUI Script using <b>Run Script</b> keyword in different languages by changing the <b>Language</b> parameter. 
 
@@ -134,6 +134,6 @@ Run Russian
 <br><br>
 
 <h3> For More Details........</h3>
-Library working demo: https://youtu.be/HAfQpNZVbKI
+[Library working demo](https://youtu.be/HAfQpNZVbKI)
 
 [LinkedIn Announcement](https://www.linkedin.com/posts/nived-n-776470139_nived00015taguirobocorplibrary-activity-6787800490831962112-8-wz)
