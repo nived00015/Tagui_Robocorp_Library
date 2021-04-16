@@ -7,7 +7,7 @@ This is the library for TagUI Robocorp Integration. TagUI is an open source RPA 
 
 Step 1 :  Download the file [<b>Tagui_Robocorp.zip</b>](https://github.com/nived00015/Tagui_Robocorp_Library.git) for understanding the library usage
 
-Step 2 :  From the downloaded zip file, extract the folder [<b>Tagui_Robocorp_Library-main</b>]
+Step 2 :  From the downloaded zip file, extract the folder [<b>Tagui_Robocorp</b>]
 
 Step 3 :  The folder contains <b>tagui_script.py</b>, which is python file and sample robocorp workflow
 
