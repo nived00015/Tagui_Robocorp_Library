@@ -35,7 +35,7 @@ Run English Script
     ...   https://login.xero.com/identity/user/login
     ...   type email as user@gmail.com
     ...   type password as 123456
-    ...   click Log In
+    ...   click Log in
     ...   echo Logged
 ```
 <b>Run Script</b> keyword takes the following parameters <br>
